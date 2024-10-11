@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Notification Settings</h1>
+    
+    <label for="notification-toggle">Enable Notifications:</label>
+    <input type="checkbox" id="notification-toggle" />
+
+    <button id="answerBtn">Test Answer Notification</button>
+    <button id="upvoteBtn">Test Upvote Notification</button>
+
+    <script>
+        const notificationToggle = document.getElementById('notification-toggle');
+        const answerBtn = document.getElementById('answerBtn');
+        const upvoteBtn = document.getElementById('upvoteBtn');
+
+        // Function to request permission for notifications
+        function requestPermission() {
+            if (Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    console.log('Notification permission status:', permission);
+                });
+            }
+        }
+
+        // Function to show notification
+        function showNotification(eventType) {
+            if (notificationToggle.checked && Notification.permission === 'granted') {
+                let message = '';
+                if (eventType === 'answer') {
+                    message = 'Someone answered your question!';
+                } else if (eventType === 'upvote') {
+                    message = 'Someone upvoted your question!';
+                }
+                new Notification("Notification", {
+                    body: message,
+                    icon: 'icon.png' // You can use an icon if you like
+                });
+            } else if (Notification.permission === 'denied') {
+                alert("You have denied notifications. Please enable them in your browser settings.");
+            } else {
+                alert("Notifications are disabled.");
+            }
+        }
+
+        // Attach event listeners to buttons
+        answerBtn.addEventListener('click', () => showNotification('answer'));
+        upvoteBtn.addEventListener('click', () => showNotification('upvote'));
+
+        // Request notification permission if user checks the box
+        notificationToggle.addEventListener('change', () => {
+            if (notificationToggle.checked) {
+                requestPermission();
+            }
+        });
+    </script>
+</body>
+</html>
